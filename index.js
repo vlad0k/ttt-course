@@ -1,56 +1,59 @@
-const X = "X";
-const O = "O";
+const API_URL = "https://ttt-course-server.herokuapp.com";
+const WS_URL = "wss://ttt-course-server.herokuapp.com/ws";
+// const API_URL = "http://localhost:3000";
+// const WS_URL = "ws://localhost:3000/ws";
 
-let currentMove = X;
+const state = {
+  player: null,
+  gameId: null,
+  _move: "X",
 
-const cells = [...document.getElementsByClassName("cell")];
+  set move(val) {
+    const moveContainer = document.getElementById("move");
+    moveContainer.innerHTML = val;
 
-const checkWin = () => {
-  const cellValues = [...document.getElementsByClassName("cell")].map(
-    (cell) => cell.innerHTML
-  );
+    this._move = val;
+  },
 
-  const winVarians = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  const isEmtyCell = cellValues.find((cellValue) => cellValue === "");
-
-  if (isEmtyCell === undefined) {
-    const winContainer = document.getElementsByClassName("winContainer")[0];
-    winContainer.innerHTML = `Round Draw!`;
-  }
-
-  winVarians.forEach((variant) => {
-    if (
-      cellValues[variant[0]] === cellValues[variant[1]] &&
-      cellValues[variant[0]] === cellValues[variant[2]] &&
-      cellValues[variant[0]] !== "" &&
-      cellValues[variant[1]] !== "" &&
-      cellValues[variant[2]] !== ""
-    ) {
-      const winContainer = document.getElementsByClassName("winContainer")[0];
-      winContainer.innerHTML = `Winner is: ${cellValues[variant[0]]}!!!`;
-    }
-  });
+  get move() {
+    return this._move;
+  },
 };
 
-cells.forEach((cell) => {
-  cell.onclick = () => {
-    if (cell.innerHTML) {
-      return;
-    }
+console.log(state.move);
 
-    cell.innerHTML = currentMove;
-    currentMove = currentMove === X ? O : X;
+const startButton = document.getElementById("start_btn");
 
-    checkWin();
-  };
-});
+startButton.onclick = () => {
+  fetch(API_URL + "/start-game", {
+    method: "POST",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+
+      state.player = data.player;
+      state.gameId = data.gameId;
+
+      createWSConnection();
+
+      const gameIdSpan = document.getElementById("gameId");
+      gameIdSpan.innerHTML = data.gameId;
+
+      const playerSpan = document.getElementById("player");
+      playerSpan.innerHTML = data.player;
+
+      const gameStartBlock = document.getElementsByClassName("gameStart")[0];
+      gameStartBlock.classList.remove("gameStart_visible");
+
+      const gameBoardBlock = document.getElementsByClassName("gameBoard")[0];
+      gameBoardBlock.classList.add("gameBoard_visible");
+    });
+};
+
+const fillTable = (table) => {
+  const cells = [...document.getElementsByClassName("cell")];
+  cells.forEach((cell, i) => {
+    cell.innerHTML = table[i];
+  });
+};

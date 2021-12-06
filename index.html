@@ -8,25 +8,47 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="table">
-      <div class="row">
-        <div class="cell" id="1"></div>
-        <div class="cell" id="2"></div>
-        <div class="cell" id="3"></div>
-      </div>
-      <div class="row">
-        <div class="cell" id="4"></div>
-        <div class="cell" id="5"></div>
-        <div class="cell" id="6"></div>
-      </div>
-      <div class="row">
-        <div class="cell" id="7"></div>
-        <div class="cell" id="8"></div>
-        <div class="cell" id="9"></div>
-      </div>
+    <div class="gameStart gameStart_visible">
+      <button id="start_btn">Start new Game</button>
+
+      <form id="connectForm">
+        <select id="games-select" name="gameId" placeholder="select">
+          <option value="" default>--- Select game ---</option>
+          <option disabled>loading...</option>
+        </select>
+        <button type="submit">Connect game</button>
+      </form>
     </div>
 
-    <div class="winContainer"></div>
-    <script src="index.js"></script>
+    <div class="gameBoard">
+      <h1>GameId: <span id="gameId"></span></h1>
+      <h2>Player: <span id="player"></span></h1>
+      <h2>Move: <span id="move">X</span></h1>
+
+      <div class="table">
+        <div class="row">
+          <div class="cell" id="0"></div>
+          <div class="cell" id="1"></div>
+          <div class="cell" id="2"></div>
+        </div>
+        <div class="row">
+          <div class="cell" id="3"></div>
+          <div class="cell" id="4"></div>
+          <div class="cell" id="5"></div>
+        </div>
+        <div class="row">
+          <div class="cell" id="6"></div>
+          <div class="cell" id="7"></div>
+          <div class="cell" id="8"></div>
+        </div>
+      </div>
+
+      <div class="winContainer"></div>
+    </div>
+    <script defer src="webSocket.js"></script>
+    <script defer src="index.js"></script>
+    <script defer src="fetchGames.js"></script>
+    <script defer src="connectGame.js"></script>
+    <script defer src="move.js"></script>
   </body>
 </html>
